@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>An introduction to choropleth mapping using renovation permits in Toronto</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">An introduction to choropleth mapping using renovation
+permits in Toronto</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#context" id="toc-context">Context</a></li>
+<li><a href="#objectives" id="toc-objectives">Objectives</a></li>
+<li><a href="#guidelines" id="toc-guidelines">Guidelines</a>
+<ul>
+<li><a href="#fetching-the-data" id="toc-fetching-the-data">1. Fetching
+the data</a></li>
+<li><a href="#setting-up-your-workspace"
+id="toc-setting-up-your-workspace">2. Setting up your workspace</a></li>
+<li><a href="#inspect-the-data" id="toc-inspect-the-data">3. Inspect the
+data</a></li>
+<li><a href="#cleaning-up-the-permits-dataset"
+id="toc-cleaning-up-the-permits-dataset">4. Cleaning up the permits
+dataset</a></li>
+<li><a href="#joining-tables" id="toc-joining-tables">5. Joining
+tables</a>
+<ul>
+<li><a href="#creating-a-join-key" id="toc-creating-a-join-key">5.1
+Creating a join key</a></li>
+<li><a href="#generating-coordinates-for-the-join"
+id="toc-generating-coordinates-for-the-join">5.2 Generating coordinates
+for the join</a></li>
+<li><a href="#doing-the-join" id="toc-doing-the-join">5.3 Doing the
+join</a></li>
+<li><a href="#generating-points-from-the-coordinates"
+id="toc-generating-points-from-the-coordinates">5.4 Generating points
+from the coordinates</a></li>
+</ul></li>
+<li><a href="#aggregating-points-to-the-neighbourhood-level"
+id="toc-aggregating-points-to-the-neighbourhood-level">6. Aggregating
+points to the neighbourhood level</a></li>
+<li><a href="#creating-a-map" id="toc-creating-a-map">7. Creating a
+map</a></li>
+<li><a href="#correcting-this-very-flawed-map"
+id="toc-correcting-this-very-flawed-map">8. Correcting this very flawed
+map!</a></li>
+<li><a href="#publishing-your-map" id="toc-publishing-your-map">9.
+Publishing your map</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="context">Context</h1>
+<p>In this lab, we will explore the challenges of mapping messy urban
+data. We will be sourcing from Toronto’s open data portal with a
+particular focus on renovation permit data. Renovation permits are an
+intriguing indicator of the intentions of property owners to modify the
+city’s built form, so visualizing them spatially could provide an
+intriguing view of urban change across the city. We will be using QGIS
+which, like many other open source tools, has entered the mainstream in
+recent years.</p>
+<p>The lab is primarily focused on data engineering and cartographic
+styling, and provides a tutorial on these which you should work from as
+you take on your own self-directed exercise in section 8.</p>
+<h1 id="objectives">Objectives</h1>
+<ul>
+<li>Introduce the QGIS workspace</li>
+<li>Introduce reliable data management practices</li>
+<li>Introduce fundamental vector geoprocessing tasks</li>
+<li>Introduce cartographic styling and publication in QGIS</li>
+</ul>
+<h1 id="guidelines">Guidelines</h1>
+<h2 id="fetching-the-data">1. Fetching the data</h2>
+<p>To do this lab, download the 3 following datasets.</p>
+<ol type="1">
+<li><a
+href="https://open.toronto.ca/dataset/building-permits-cleared-permits/">Toronto’s
+cleared building permits</a>: download <em>since 2017</em> in CSV
+format.</li>
+<li><a
+href="https://open.toronto.ca/dataset/address-points-municipal-toronto-one-address-repository/">Toronto’s
+georeferenced addresses</a> select the <em>MTM10</em> projection from
+the dropdown and download in the GeoPackage format.</li>
+<li><a href="https://open.toronto.ca/dataset/neighbourhoods/">Toronto’s
+neighbourhood geometries</a> select the <em>MTM10</em> projection from
+the dropdown and download in the GeoPackage format.</li>
+</ol>
+<h2 id="setting-up-your-workspace">2. Setting up your workspace</h2>
+<ol type="1">
+<li>It’s important to set a folder where you will be storing your
+working files. This keeps things neat, avoids misplacing any files you
+will be creating, and also makes your work portable. For this lab, we
+will create a folder on the Desktop.
+<ol type="1">
+<li>On your Desktop (Win+D), right-click &gt; New &gt;
+<strong>Folder</strong>. Name the folder <em>qgis-lab</em></li>
+<li>Move the files you downloaded into this folder.</li>
+</ol></li>
+<li>Open <em>QGIS Desktop 3.40.8</em>.</li>
+<li>Once inside, Project &gt; <strong>New</strong> to create a new
+project.</li>
+<li>Before doing anything else, you should make sure to set the save
+location for your current work session: Project &gt; <strong>Save
+As…</strong>. Navigate to your <em>qgis-lab</em> folder and give it a
+similar name (such as just <em>qgis-lab</em>). This saves your work
+session as a .<a
+href="https://docs.qgis.org/3.44/en/docs/user_manual/appendices/qgis_file_formats.html#qgs-qgz-the-qgis-project-file-format">qgz</a>
+file, which is essentially a compressed folder of all your settings and
+configurations that can be opened only in QGIS. This file will not
+contain your data!</li>
+<li>The <a
+href="https://docs.qgis.org/3.44/en/docs/training_manual/basic_map/overview.html#the-browser-panel">Browser
+panel</a> on the left is where you can access data on your machine from
+within QGIS. Here, we will create a shortcut to the folder workspace you
+created, so you can keep track of what’s in your folder as you progress:
+<ol type="1">
+<li>Right click Favorites &gt; <strong>Add a Directory…</strong></li>
+<li>In the system browser, navigate to and select the folder you created
+which should be under Desktop. Once that’s done, you should see the
+folder and its contents listed under <em>Favorites</em>. If you ever add
+new contents to the folder, simply right-click and hit
+<strong>Refresh</strong>.</li>
+</ol></li>
+<li>Finally, we will create a geopackage to store all our data.
+Right-click on the folder you added to your Favorites list &gt; New &gt;
+<strong>Geopackage…</strong> and give it a meaningful name (Right-click
+it &gt; Manage &gt; Rename), such as <em>data</em>.</li>
+</ol>
+<blockquote>
+<p>A <a
+href="https://feed.terramonitor.com/shapefile-vs-geopackage-vs-geojson/">geopackage</a>
+is an open source standard for storing geographic data. What’s both
+interesting and confusing about it is that we can store individual
+datasets as geopackages, but also hundreds of them inside a single
+geopackage. Think of a geopackage as a specialized geospatial folder
+that can contain all your data. This makes your workspace much easier to
+manage and move around…</p>
+</blockquote>
+<p>Put all your datasets into the geopackage you just made. This will
+greatly facilitate things down the line, notably since QGIS doesn’t work
+well with raw CSV…</p>
+<ol type="1">
+<li>To do this, click the dropdowns for the addresses and neighbourhoods
+geopackages to reveal their contents and drag their contents into your
+project geopackage (<em>data.gpkg</em>).</li>
+<li>For the CSV, you might need to right-click &gt; Export Layer &gt;
+<strong>To File…</strong> and then select your <em>data.gpkg</em> as the
+input for <em>File name</em>, the click <strong>OK</strong>.</li>
+<li>Right-click your <em>data.gpkg</em> and click
+<strong>Refresh</strong> to view your imported data and make sure
+everything is there.</li>
+</ol>
+<h2 id="inspect-the-data">3. Inspect the data</h2>
+<p>You have three datasets, two of which are geospatial. Our goal is to
+create a map of renovation permits by combining these three. Why do we
+need to combine the three?</p>
+<ul>
+<li>Our permits data are only tabular, don’t have any <a
+href="https://wustl.pressbooks.pub/geospatialthinking/chapter/chapter-4-the-nature-of-geospatial-data/">geometries</a>,
+but they do have geographic information in text form, i.e. addresses.
+Look at the data dictionary on the <a
+href="https://open.toronto.ca/dataset/building-permits-cleared-permits/">page</a>
+you downloaded them from (select the data under <em>Resources</em> and
+select the <em>Dictionary</em> tab). Of particular interest:
+<em>STREET_NUM</em> and <em>STREET_NAME</em>…</li>
+<li>Our addresses data are an important complement to the above permits
+data, since they have both addresses in text form <em>and</em>
+geometries attached (i.e. georeferenced points). This means we could use
+the addresses to join the renovation permits to these points…</li>
+<li>Finally, our neighbourhoods file (stored as polygons), will be
+helpful later on for creating a map that can connect with a wide
+audience…</li>
+</ul>
+<ol type="1">
+<li>Drag your three datasets from your <em>data.gpkg</em> in your
+browser pane into the map view. The map view should automatically
+visualize the geospatial datasets for you. You will also see these files
+listed as layers in lefthand <a
+href="https://docs.qgis.org/3.44/en/docs/training_manual/basic_map/overview.html#the-layers-list">ToC/Layers
+List</a>.</li>
+</ol>
+<h2 id="cleaning-up-the-permits-dataset">4. Cleaning up the permits
+dataset</h2>
+<p>Some basic tabular data manipulations can be done from within QGIS,
+which avoids us having to export the data to Excel for doing so.</p>
+<ol type="1">
+<li>Open the permits table by right-clicking the file in the ToC &gt;
+<strong>Open Attribute Table</strong>.</li>
+</ol>
+<p>Each row in the permits table has a permit number as well as a
+revision number (<em>REVISION_NUM</em>). The data dictionary tells us
+that revisions are made to a same permit, meaning they might represent
+corrections after feedback made by urbanists to applicants, for example.
+We do not want to give more weight to permits that got revised multiple
+times, so we will need to treat revisions to a same permit as duplicate
+rows to be removed. Our goal: each row represents one unique renovation
+permit. To remove the revisions:</p>
+<ol type="1">
+<li>First, display the <em>Processing Toolbox</em> by selecting it under
+<em>View</em> &gt; <em>Panels</em>. It should then appear as a tab on
+the bottom-right.</li>
+<li>Processing Toolbox &gt; search for <em>Delete Duplicates by
+Attribute</em></li>
+<li>Load the permits table as the <em>Input layer</em>.</li>
+<li>Set <em>Field to match duplicates by</em> to
+<em>PERMIT_NUM</em>.</li>
+<li>As the <em>Filtered (no duplicates)</em> output, we will save it as
+a new file in our geopackage: click the <strong>…</strong> &gt; Save to
+GeoPackage, and in the popup, browse to and select your
+<em>data.gpkg</em>. In the popup that appears, give your output a name
+(i.e. <em>unique-permits</em>).</li>
+<li>Right-click &gt; Refresh the <em>data.gpkg</em> in your browser
+panel and drag your output data into your workspace if it’s not already
+there.</li>
+</ol>
+<p>Doing this keeps the first feature it the algorithm hits for each
+permit number (keeping only an arbitrary revision), which is fine for
+quantifying permits by neighbourhood. The process should have removed
+many thousands of rows!</p>
+<p>We would also like to only keep recent permits. Our data go back to
+2017, a long time ago. To focus the dataset temporally, we could cut it
+off at around the time of the last census, which would give us a
+snapshot of the last 5 years of urban change in Toronto.</p>
+<ol start="7" type="1">
+<li>Open the <em>unique-permits</em> attribute table.</li>
+<li>Click the <strong><a
+href="https://docs.qgis.org/3.44/en/docs/user_manual/expressions/expression.html#the-expression-string-builder">Select
+features using an expression</a></strong> icon and in the popup, paste
+the following in the expression box:
+<code>to_date("APPLICATION_DATE", 'yyyy-MM-dd') &lt; to_date('2020-01-01')</code>.</li>
+<li>Exit the attribute table and right-click on <em>unique-permits</em>
+&gt; Export &gt; <strong>Save selected features as…</strong>.</li>
+<li>Under <em>File name</em>, make sure to browse to and select your
+project geopackage (<em>data.gpkg</em>), then as a layer name, you can
+name it something like <em>unique-permits-recent</em>. click
+<strong>OK</strong>.</li>
+</ol>
+<h2 id="joining-tables">5. Joining tables</h2>
+<p>In this processing step, we will join the addresses data to the
+permits data. We will join these datasets thanks the addresses
+information contained in both datasets.</p>
+<ul>
+<li>In your cleaned up permits file, we have <em>STREET_NUM</em> and
+<em>STREET_NAME</em>.</li>
+<li>In the addresses file, we have <em>ADDRESS_NUMBER</em> and
+<em>LINEAR_NAME</em>.</li>
+</ul>
+<h3 id="creating-a-join-key">5.1 Creating a join key</h3>
+<p>Notice that <em>STREET_NAME</em> in the permits table is all
+uppercase, and <em>LINEAR_NAME</em> in the addresses file uses title
+case. In addition, the street names and civic numbers are in separate
+fields/attributes in both files. We need full addresses (actual
+locations) to connect the address geometries to our permits. We will do
+this by standardizing the street names and combining them with the civic
+numbers in a new field. This <em>join field</em> will presumably allow
+an address in the addresses file to match the same address in the
+permits file…</p>
+<ol start="2" type="1">
+<li>Inside the popup attribute table of your permits data, click <a
+href="https://docs.qgis.org/3.44/en/docs/user_manual/working_with_vector/attribute_table.html#using-the-field-calculator"><strong>Open
+field calculator</strong></a> (Ctrl+I). The field calculator is very
+useful for calculating attributes from feature geometries or other
+attributes.</li>
+<li>We will be creating a new field (column) for the percentage of cycle
+paths: for your <em>Output field name</em>, enter
+<em>join_key</em>.</li>
+<li>Choose <em>Text (string)</em> as the <em>Output field
+type</em>.</li>
+<li>In the <em>Expression</em> box, you will enter your equation:
+<code>to_string("STREET_NUM") || ' ' || lower("STREET_NAME")</code></li>
+<li>Hit <strong>Apply</strong> and, if successful (it will take some
+time), then hit <strong>Ok</strong>. your attribute table should now
+have a new field at the end called <em>join_key</em> containing cleaned
+addresses.</li>
+<li>Repeat the same steps for your addresses data, but make sure to
+replace the appropriate field names in the expression box (i.e. replace
+with <em>ADDRESS_NUMBER</em> and <em>LINEAR_NAME</em>).</li>
+</ol>
+<h3 id="generating-coordinates-for-the-join">5.2 Generating coordinates
+for the join</h3>
+<p>We want to map renovation permits, not addresses. This means we
+should join the addresses file <em>to</em> our permits table, rather
+than the other way around. The problem with the traditional join is the
+following: if we join the addresses to the permits, we lose the address
+geometries since QGIS only keeps geometries from the primary join
+dataset (what is being joined to). If we join the permits to the
+addresses, many permits are discarded since there is often more than one
+permit per address (condo buildings addresses contain hundreds of units
+at one street address). So we need a workaround…</p>
+<p>The workaround will be to create text columns representing
+coordinates from the address geometries. We will then join these columns
+like any other column to the permits, which will then allow us to locate
+the permits.</p>
+<ol type="1">
+<li>Open the attribute table of your addresses layer and then the field
+calculator.</li>
+<li>You will again be creating new fields with <em>Output field
+names</em> called <em>xcoord</em> and <em>ycoord</em> respectively, and
+an <em>Output field type</em> of <em>Decimal</em>.</li>
+<li>In the expression box, you will enter <em>$x</em> and <em>$y</em>
+respectively.</li>
+<li>Once you’ve applied the changes and clicked <strong>OK</strong>, you
+might need to click the <strong>Toggle off editing mode</strong> icon
+and save your changes.</li>
+</ol>
+<p>You should now have 2 new columns containing the eastings and
+northings for each address in metres (these are coordinates specific to
+<a href="https://spatialreference.org/ref/epsg/2952/">MTM zone 10</a>,
+the local projection used for accurately mapping Toronto).</p>
+<h3 id="doing-the-join">5.3 Doing the join</h3>
+<ol type="1">
+<li>Search the Processing Toolbox for <strong>Join attributes by field
+value</strong>. This is the best way to join in QGIS.</li>
+<li>Choose your cleaned up permits layer as the first <em>Input
+layer</em>, and select <em>join_key</em> as the <em>Table
+field</em>.</li>
+<li>Choose your addresses file as the <em>Input layer 2</em>, and select
+<em>join_key</em> as the <em>Table field 2</em>.</li>
+<li>Select <em>Discard records which could not be joined</em>.</li>
+<li>Choose your save method: temporary or to disk in your
+<em>data.gpkg</em> (the disadvantage of a temporary layer is that it
+will be lost if QGIS shuts down accidentally).</li>
+</ol>
+<h3 id="generating-points-from-the-coordinates">5.4 Generating points
+from the coordinates</h3>
+<p>The final step will be to use the joined coordinates to turn our
+permits into points.</p>
+<ol type="1">
+<li>In the Processing Toolbox, search <strong>Create Points Layer from
+Table</strong>.</li>
+<li>Select the joined layer as the input layer</li>
+<li>For the <em>X</em> and <em>Y fields</em>, select the <em>xcoord</em>
+and <em>ycoord</em> columns.</li>
+<li>For the <em>Target CRS</em>, select the <em>Project CRS</em>
+(MTM10).</li>
+<li>Choose an output strategy (temporary layer or to disk) and hit
+<strong>Run</strong>.</li>
+</ol>
+<p>You should now have your permits mapped! Make sure they’re saved to
+your <em>data.gpkg</em>. If not already, right-click your output points
+layer &gt; <strong>Make Permanent</strong> to save it to your
+geopackage.</p>
+<h2 id="aggregating-points-to-the-neighbourhood-level">6. Aggregating
+points to the neighbourhood level</h2>
+<p>Since we want to use neighbourhoods as a framework for mapping in
+this exercise, we need to quantify how many points (permits) there are
+per neighbourhood. This will require a simple spatial join, unlike the
+previous tabular join.</p>
+<ol type="1">
+<li>In the Processing Toolbox, search <strong>Join attributes by
+location (summary)</strong>.</li>
+<li><em>Join to features in</em> &gt; choose your neighbourhoods
+layer.</li>
+<li><em>By comparing to</em> &gt; choose your permits points file.</li>
+<li>Under <em>Fields to summarise</em> &gt; select <em>fid</em> is
+fine.</li>
+<li>Under <em>Summaries to calculate</em>, select <em>count</em> (number
+of permits per neighbourhood is all we need).</li>
+<li>Select your output/save strategy and click
+<strong>Run</strong>.</li>
+</ol>
+<p>You should now have a neighbourhoods file with a column
+<em>fid_count</em> that tells you how many permits there are in that
+neighbourhood.</p>
+<h2 id="creating-a-map">7. Creating a map</h2>
+<p>Now that some data is prepared, we can move from the GIS component of
+the lab to the cartography component. Our goal here is to make a simple
+choropleth map of permits.</p>
+<ol type="1">
+<li>QGIS offers <a
+href="https://docs.qgis.org/3.44/en/docs/training_manual/basic_map/symbology.html">many
+tools</a> for producing beautiful maps. These can be found in the
+<em>Layer Styling</em> pane, which may not be visible. To open tit: View
+&gt; Panels &gt; <strong>Layer Styling</strong>. It should appear on the
+righthand pane, but you can resize or drag and drop it anywhere. At the
+top of the pane, under Layer Styling, make sure your final polygon file
+is selected. This selection ensures you are styling the right
+layer.</li>
+<li>To create a choropleth map, first make sure the <a
+href="https://docs.qgis.org/3.44/en/docs/training_manual/basic_map/symbology.html#follow-along-changing-colors"><em>Symbology</em></a>
+vertical tab is selected:
+<ol type="1">
+<li>Select <em>Single Symbol</em> which should reveal a dropdown,
+allowing you to choose a styling approach for polygons: select
+<em>Graduated</em>.</li>
+<li>For <em>Value</em>, select your <em>fid_count</em> field.</li>
+<li>At the bottom, look for the <strong>Classify</strong> button and
+click it. This should generate your first choropleth map!</li>
+<li>You can select a classification scheme by selecting from the
+<em>Mode</em> dropdown. You can also modify the number of
+<em>Classes</em> to the right. You can then explore how your scheme
+relates to the data’s frequency distribution by clicking on the
+<em>Histogram</em> tab and then clicking <strong>Load Values</strong>.
+Try different schemes. Which one do you prefer? Which tells the most
+compelling story?</li>
+<li>Select a <em>Color ramp</em> from the dropdown to adequately
+communicate the cycling theme (red may not be ideal).</li>
+<li>Finally, you can also change the outlines by clicking the
+<em>Symbol</em> dropdown &gt; <strong>Configure Symbol…</strong>. Don’t
+be confused by the fact that the fill colour may not reflect your
+graduated colour ramp, which overrides the single-colour fill. To modify
+the outline, select <em>Simple Fill</em> and modify the <em>Stroke
+color</em>, <em>width</em> and <em>style</em>.</li>
+</ol></li>
+<li>To add and edit labels, click the <a
+href="https://docs.qgis.org/3.44/en/docs/training_manual/vector_classification/label_tool.html#follow-along-using-labels"><em>Labels</em></a>
+vertical tab:
+<ol type="1">
+<li>Click the dropdown that appears to select <em>Single
+Labels</em></li>
+<li>As the <em>Value</em>, select <em>AREA_NAME</em> to render the
+neighbourhood name as each polygon’s label.</li>
+<li>There are many settings you can explore to improve your labels and
+make them more visible, organized as submenus under the horizontal tabs.
+To add a halo effect for example, click the <em>Buffer</em> tab and
+check off <em>Draw text buffer</em>. You can also play with label
+placement by selecting the <em>Placement</em> tab further to the
+right.</li>
+<li>You can also load in and style other geospatial layers from <a
+href="https://open.toronto.ca/catalogue/">Toronto’s open data
+portal</a>, such as streets, railways, waterways, parks, etc. As long as
+none of this distracts from the main objective of your map!</li>
+</ol></li>
+</ol>
+<h2 id="correcting-this-very-flawed-map">8. Correcting this very flawed
+map!</h2>
+<p>There are major issues with this map, however. Fundamental ones,
+actually. Can you name why?</p>
+<p>First, choropleth maps cannot display raw count data. This is due to
+the <a
+href="https://gisgeography.com/maup-modifiable-areal-unit-problem/">modifiable
+areal unit problem</a>. Data displayed on a choropleth map need a common
+denominator, since areal units (neighbourhoods) have varying sizes which
+can over- or underrepresent magnitude in any given location based simply
+on the size of the neighbourhood (a larger neighbourhood will often have
+more permits, but that says nothing about the magnitude or density of
+permits in that neighbourhood compared to another). To solve this, we
+can consider doing the following:</p>
+<ul>
+<li><strong>Normalizing by area</strong>: we could consider dividing the
+permits by the number of square kilometers in a neighbourhood, which
+would give us a permits-per-km2 number to compare between
+neighbourhoods, but that would not account for how urban density varies
+between neighbourhoods, let alone how urbanized the neighbourhood is in
+the first place.</li>
+<li><strong>Normalizing by dwelling</strong>: a better approach would be
+to compare renovation permits to the <strong>number of
+dwellings</strong> per neighbourhood. To do this, you would explore
+joining <a
+href="https://open.toronto.ca/dataset/neighbourhood-profiles/">Toronto’s
+Neighbourhood Profiles</a> to your neighbourhood geometries. These
+profiles contain the number of dwellings based on the 2021 survey.
+<ul>
+<li>However, you would then need to extract the residential permits and
+discard the commercial or industrial ones, since these have nothing to
+do with dwellings. <strong>A direct comparison between residential
+renovation permits and residential units/dwellings/households would
+provide a much clearer picture of residential change across
+Toronto</strong>…</li>
+</ul></li>
+</ul>
+<p>There’s a challenge for you! You have the skills to do this. Good
+luck!</p>
+<h2 id="publishing-your-map">9. Publishing your map</h2>
+<p>Preparing your map for export is an important final step that
+involves much cartographic decision-making, since this is where your map
+layout is designed.</p>
+<ol type="1">
+<li>To start creating your map layout, Project &gt; <strong>New Print
+Layout</strong>. Name your layout as you choose (often, mapmakers will
+have many print layouts already prepared for use depending on the kind
+of map they’re making). Click <strong>OK</strong>.</li>
+<li>This should open the <a
+href="https://docs.qgis.org/3.44/en/docs/training_manual/map_composer/map_composer.html#follow-along-basic-map-composition">print
+composer</a> window, where you will add all your map elements:
+<ol type="1">
+<li>First, create a ‘mapped area’ by selecting the <em>Add Map</em> icon
+on the left. Then drag and drop a rectangle to create the mapped area
+within your canvas. To choose an appropriate extent and zoom scale for
+your mapped area, press C or the <em>Move item content</em> cursor to
+pan around. Return to the <em>Select/move item</em> (V) cursor when
+you’re done. If you ever make changes to your map in the main window
+that you want to see reflected in the mapped area of your print layout,
+make sure to click the refresh button under <em>Item properties</em> in
+the righthand pane with your mapped area selected…</li>
+<li>Find the <em>Add Legend</em> icon and drag and drop to create the
+legend area. This should generate an automatic legend.
+<ol type="1">
+<li>You might find that this legend is too cluttered, since it contains
+all layers loaded into your current session. To clean up the legend,
+make sure it’s selected and on the right, click the <em>Item
+properties</em> tab and under <em>Legend Items</em>, uncheck <em>Auto
+update</em>[^2], then delete all the layers except for your choropleth
+(you can do this by selecting the layers and hitting the red minus
+icon).</li>
+<li>To remove the layer name itself, right-click it and select
+<strong>Hidden</strong>. Now your legend should look slick!</li>
+</ol></li>
+<li>Add a scale bar, as well as a title and other important textual
+information. Like with the legend, you can make many design choices in
+the <em>Item properties</em> tab for each selected map element…</li>
+</ol></li>
+<li>Now for some finishing touches: to tighten up your print layout
+around your map elements, right-click anywhere on the canvas and click
+<strong>Page Properties…</strong>, then under the <em>Layout</em> tab in
+the righthand pane, click <strong>Resize Layout</strong> under
+<em>Resize Layout to Content</em>.</li>
+<li>To export your map, you can select various formats… Selecting SVG
+will allow you to make more detailed changes (such as precise label
+placement) in a vector graphics editor such as <a
+href="https://inkscape.org/about/">Inkscape</a>. If you wish to avoid
+doing that, Layout &gt; <strong>Export as PDF</strong>.</li>
+</ol>
+</body>
+</html>
