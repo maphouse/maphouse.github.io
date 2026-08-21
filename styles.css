@@ -21,3 +21,11 @@ body {
 ul {
   padding-left: 1em;
 }
+
+.ascii-portrait {
+  font-family: "TX-02", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 7px;
+  line-height: 1;
+  letter-spacing: 0;
+  margin: 0.5em 0;
+}
