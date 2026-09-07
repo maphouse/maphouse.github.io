@@ -1,21 +1,14 @@
 @font-face {
-  font-family: "TX-02";
-  src: url("/fonts/tx-02-regular.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Libre Franklin";
+  src: url("/fonts/LibreFranklin-variable.woff2") format("woff2-variations");
+  font-weight: 100 900;
   font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TX-02";
-  src: url("/fonts/tx-02-oblique.woff2") format("woff2");
-  font-weight: 400;
-  font-style: oblique;
   font-display: swap;
 }
 
 body {
-  font-family: "TX-02", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 400;
+  font-family: "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
 }
 
 ul {
@@ -23,7 +16,7 @@ ul {
 }
 
 .ascii-portrait {
-  font-family: "TX-02", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 1px;
   line-height: 1;
   letter-spacing: 0;
