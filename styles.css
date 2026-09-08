@@ -54,3 +54,42 @@ footer {
   gap: 0.75em;
   padding: 1em 0 2em;
 }
+
+/* Year strips: one monospace cell per year on a shared 2013–2026 axis,
+   right-aligned into a gutter so the list reads as a Gantt column. */
+.yrs-axis {
+  text-align: right;
+  margin: 0 0 0.4em;
+  color: #9aa4ad;
+}
+
+.yrs-axis span,
+.yrs {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  letter-spacing: 0;
+  white-space: pre;
+  display: inline-block;
+  width: 15ch;          /* 14 year cells + the ongoing arrow */
+  text-align: left;
+}
+
+ul.tree {
+  position: relative;
+  padding-right: 9em;   /* reserve the gutter so text never runs under a strip */
+}
+
+ul.tree .yrs {
+  position: absolute;
+  right: 0;
+  color: #3f6b4a;       /* canopy green, same as the footer cityscape */
+}
+
+.yrs .t { color: #ccd3d9; }
+.yrs .o { color: #8fb098; }
+
+@media (max-width: 34em) {
+  .yrs-axis { display: none; }
+  ul.tree { padding-right: 1em; }
+  ul.tree .yrs { position: static; margin-left: 0.5em; }
+}
