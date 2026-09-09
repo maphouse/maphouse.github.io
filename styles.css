@@ -55,10 +55,9 @@ footer {
   padding: 1em 0 2em;
 }
 
-/* Year strips: one monospace cell per year on a shared 2013–2026 axis,
-   right-aligned into a gutter so the list reads as a Gantt column. */
+/* Year strips: one monospace cell per year on a shared 2013-2026 axis,
+   set in a left gutter so the list reads as a Gantt column. */
 .yrs-axis {
-  text-align: right;
   margin: 0 0 0.4em;
   color: #9aa4ad;
 }
@@ -76,12 +75,17 @@ footer {
 
 ul.tree {
   position: relative;
-  padding-right: 9em;   /* reserve the gutter so text never runs under a strip */
+  padding-left: 8.1em;  /* the gutter the strips occupy */
+}
+
+/* Tighter nesting than the 1em default, so names stay near the timeline. */
+ul.tree ul {
+  padding-left: 0.7em;
 }
 
 ul.tree .yrs {
   position: absolute;
-  right: 0;
+  left: 0;
   color: #3f6b4a;       /* canopy green, same as the footer cityscape */
 }
 
@@ -90,6 +94,6 @@ ul.tree .yrs {
 
 @media (max-width: 34em) {
   .yrs-axis { display: none; }
-  ul.tree { padding-right: 1em; }
+  ul.tree { padding-left: 1em; }
   ul.tree .yrs { position: static; margin-left: 0.5em; }
 }
