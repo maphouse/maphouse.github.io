@@ -64,23 +64,44 @@ footer {
   column-gap: 0.6em;
 }
 
-.tree > .yrs-axis {
+/* Header row: the axis sits in the strip gutter, "portfolio" heads the names. */
+.tree > .tree-head {
   grid-column: 2;
+  position: relative;
   margin: 0 0 0.4em;
+  padding-left: 9em;
+}
+
+.tree-head .scale {
+  position: absolute;
+  left: 0;
   color: #9aa4ad;
+}
+
+.tree-head h1,
+.tree > h2 {
+  margin: 0;
+  font-size: 0.8em;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: #6b7680;
+}
+
+.tree-head h1 {
+  display: inline;
 }
 
 .tree > h2 {
   writing-mode: vertical-rl;
   transform: rotate(180deg);   /* so it reads bottom-to-top... */
   border-left: 1px solid #dfe4e8;  /* ...which puts this hairline on the right */
-  margin: 0;
   padding: 0 0 0 0.5em;
-  font-size: 0.8em;
-  font-weight: 400;
-  letter-spacing: 0.1em;
+  /* Stretched to the row, less the same gap the ul leaves, so the hairline
+     ends with the group's last entry instead of running into the next label. */
+  margin-bottom: 1.4em;
+  font-size: 0.6em;
+  letter-spacing: 0.06em;
   text-align: center;
-  color: #6b7680;
 }
 
 .tree > ul {
@@ -89,12 +110,7 @@ footer {
   padding-left: 9em;    /* strip gutter, plus room for the list marker */
 }
 
-/* Tighter nesting than the 1em default, so names stay near the timeline. */
-.tree > ul ul {
-  padding-left: 0.7em;
-}
-
-.yrs-axis span,
+.tree-head .scale,
 .yrs {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 0.85em;
@@ -114,8 +130,14 @@ footer {
 .yrs .t { color: #ccd3d9; }
 .yrs .o { color: #8fb098; }
 
+.also {
+  margin: 0.5em 0 0;
+  color: #55606a;
+}
+
 @media (max-width: 34em) {
-  .tree > .yrs-axis { display: none; }
+  .tree-head .scale { display: none; }
+  .tree > .tree-head,
   .tree > ul { padding-left: 1em; }
   .tree .yrs { position: static; margin-left: 0.5em; }
 }
