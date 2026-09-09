@@ -55,11 +55,43 @@ footer {
   padding: 1em 0 2em;
 }
 
-/* Year strips: one monospace cell per year on a shared 2013-2026 axis,
-   set in a left gutter so the list reads as a Gantt column. */
-.yrs-axis {
+/* Three columns: a rotated group label, the year-strip gutter, then the list.
+   The h2 and the ul that follows it auto-place onto the same grid row, so the
+   label spans exactly its own group. */
+.tree {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.6em;
+}
+
+.tree > .yrs-axis {
+  grid-column: 2;
   margin: 0 0 0.4em;
   color: #9aa4ad;
+}
+
+.tree > h2 {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);   /* so it reads bottom-to-top... */
+  border-left: 1px solid #dfe4e8;  /* ...which puts this hairline on the right */
+  margin: 0;
+  padding: 0 0 0 0.5em;
+  font-size: 0.8em;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-align: center;
+  color: #6b7680;
+}
+
+.tree > ul {
+  position: relative;
+  margin: 0 0 1.4em;
+  padding-left: 9em;    /* strip gutter, plus room for the list marker */
+}
+
+/* Tighter nesting than the 1em default, so names stay near the timeline. */
+.tree > ul ul {
+  padding-left: 0.7em;
 }
 
 .yrs-axis span,
@@ -73,17 +105,7 @@ footer {
   text-align: left;
 }
 
-ul.tree {
-  position: relative;
-  padding-left: 8.1em;  /* the gutter the strips occupy */
-}
-
-/* Tighter nesting than the 1em default, so names stay near the timeline. */
-ul.tree ul {
-  padding-left: 0.7em;
-}
-
-ul.tree .yrs {
+.tree .yrs {
   position: absolute;
   left: 0;
   color: #3f6b4a;       /* canopy green, same as the footer cityscape */
@@ -93,7 +115,7 @@ ul.tree .yrs {
 .yrs .o { color: #8fb098; }
 
 @media (max-width: 34em) {
-  .yrs-axis { display: none; }
-  ul.tree { padding-left: 1em; }
-  ul.tree .yrs { position: static; margin-left: 0.5em; }
+  .tree > .yrs-axis { display: none; }
+  .tree > ul { padding-left: 1em; }
+  .tree .yrs { position: static; margin-left: 0.5em; }
 }
