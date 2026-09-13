@@ -123,5 +123,16 @@ footer {
   .tree-head .scale { display: none; }
   .tree > .tree-head,
   .tree > ul { padding-left: 1em; }
-  .tree .yrs { position: static; margin-left: 0.5em; }
+  .tree .yrs { position: static; margin-left: 0.5em; flex-shrink: 0; }
+  .tree li {
+    display: flex;
+    align-items: baseline;
+  }
+  .tree li img { flex-shrink: 0; }
+  .tree li a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
 }
