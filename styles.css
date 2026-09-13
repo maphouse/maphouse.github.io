@@ -123,7 +123,13 @@ footer {
   .tree-head .scale { display: none; }
   .tree > .tree-head,
   .tree > ul { padding-left: 1em; }
-  .tree .yrs { position: static; margin-right: 0.5em; flex-shrink: 0; }
+  .tree .yrs {
+    position: static;
+    width: auto;
+    margin-right: 0.5em;
+    flex-shrink: 0;
+  }
+  .tree .yrs .t { display: none; }
   .tree li {
     display: flex;
     align-items: baseline;
