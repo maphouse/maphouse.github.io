@@ -75,6 +75,11 @@ footer {
   list-style: none;
 }
 
+.intro {
+  margin: 0.5em 0 1.4em;
+  color: #55606a;
+}
+
 .also {
   margin: 0.5em 0 0;
   color: #55606a;
