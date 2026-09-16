@@ -20,14 +20,6 @@ li img {
   margin-right: 0.25em;
 }
 
-.ascii-portrait {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 1px;
-  line-height: 1;
-  letter-spacing: 0;
-  margin: 0.5em 0;
-}
-
 footer {
   margin-top: 1em;
   overflow: hidden;
